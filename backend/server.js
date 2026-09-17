@@ -61,7 +61,12 @@ app.get("/api/v1/db-test", async (req, res) => {
             time: result.rows[0].now
         });
     } catch (error) {
-        console.error("Database connection error:", error);
+        console.error("Database connection error:", {
+            message: error.message,
+            code: error.code,
+            detail: error.detail,
+            hint: error.hint
+        });
 
         res.status(500).json({
             status: "error",
