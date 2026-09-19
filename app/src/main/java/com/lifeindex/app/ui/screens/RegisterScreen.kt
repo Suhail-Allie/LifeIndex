@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeindex.app.ui.viewmodel.AuthViewModel
+import com.lifeindex.app.util.ValidationUtils
 
 @Composable
 fun RegisterScreen(
@@ -37,6 +38,7 @@ fun RegisterScreen(
     var displayName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var validationError by remember { mutableStateOf<String?>(null) }
 
     val uiState by authViewModel.uiState.collectAsState()
 
@@ -64,7 +66,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Create your personal tracking space.",
+            text = "Track anything. Find everything.",
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -82,12 +84,13 @@ fun RegisterScreen(
             value = displayName,
             onValueChange = {
                 displayName = it
+                validationError = null
             },
-            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text("Display Name")
             },
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -96,12 +99,13 @@ fun RegisterScreen(
             value = email,
             onValueChange = {
                 email = it
+                validationError = null
             },
-            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text("Email")
             },
-            singleLine = true
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -110,30 +114,68 @@ fun RegisterScreen(
             value = password,
             onValueChange = {
                 password = it
+                validationError = null
             },
-            modifier = Modifier.fillMaxWidth(),
             label = {
                 Text("Password")
             },
+            supportingText = {
+                Text("Use at least 8 characters.")
+            },
             singleLine = true,
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        validationError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        uiState.errorMessage?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
         Button(
             onClick = {
-                authViewModel.register(
-                    displayName = displayName.trim(),
-                    email = email.trim(),
-                    password = password
-                )
+
+                when {
+                    !ValidationUtils.isValidDisplayName(displayName) ->
+                        validationError =
+                            "Please enter your name."
+
+                    !ValidationUtils.isValidEmail(email) ->
+                        validationError =
+                            "Please enter a valid email address."
+
+                    !ValidationUtils.isValidNewPassword(password) ->
+                        validationError =
+                            "Password must be at least 8 characters."
+
+                    else -> {
+                        validationError = null
+
+                        authViewModel.register(
+                            displayName.trim(),
+                            email.trim(),
+                            password
+                        )
+                    }
+                }
             },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = displayName.isNotBlank() &&
-                    email.isNotBlank() &&
-                    password.isNotBlank() &&
-                    !uiState.isLoading
+            enabled = !uiState.isLoading,
+            modifier = Modifier.fillMaxWidth()
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator()
@@ -142,22 +184,12 @@ fun RegisterScreen(
             }
         }
 
-        uiState.errorMessage?.let { message ->
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = message,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
             onClick = onLoginClick
         ) {
-            Text("Already have an account? Sign In")
+            Text("Already have an account? Log in")
         }
     }
 }

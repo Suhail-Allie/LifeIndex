@@ -141,5 +141,5 @@ interface ApiService {
     @POST("auth/refresh")
     fun refresh(
         @Body request: RefreshTokenRequest
-    ): Call<AuthResponse>
+    ): retrofit2.Call<AuthResponse>
 }
