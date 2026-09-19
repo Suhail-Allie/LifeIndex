@@ -141,6 +141,64 @@ Settings are stored through the REST API and database.
 
 ---
 
+## Deployment
+
+The LifeIndex backend is deployed using Render.
+
+The backend is built with Node.js and Express and connects to a PostgreSQL database hosted through Supabase.
+
+### Hosted API
+
+Base URL:
+
+https://lifeindex-api.onrender.com/api/v1/
+
+Health check:
+
+https://lifeindex-api.onrender.com/api/v1/health
+
+Database connection check:
+
+https://lifeindex-api.onrender.com/api/v1/db-test
+
+The Android application communicates with the hosted API over HTTPS.
+
+Sensitive environment variables are stored securely in the hosting environment and are not committed to the repository.
+
+
+## Testing
+
+LifeIndex includes automated unit tests and GitHub Actions.
+
+### Unit Tests
+
+```bash
+./gradlew testDebugUnitTest
+
+
+
+The README requirement is explicit in the brief, including design considerations and GitHub/GitHub Actions usage. :contentReference[oaicite:2]{index=2}
+
+---
+
+
+```text
+AI USE DECLARATION – LIFEINDEX PART 2
+
+AI tools were used as development support during the implementation of LifeIndex. ChatGPT was used for code organisation, technical explanations, debugging, UI improvements, testing ideas and documentation.
+
+AI assistance was used with Kotlin, Jetpack Compose, Retrofit, Node.js, Express, PostgreSQL, JWT authentication, GitHub Actions and deployment. It assisted with identifying and resolving compilation errors, API connection issues, authentication problems and deployment issues.
+
+The application concept, feature selection, requirements, architecture and technical direction remained my responsibility. AI-generated suggestions were reviewed, adapted and tested within the LifeIndex project before being used.
+
+AI was also used to help organise the implementation around the assessment requirements, including REST API integration, validation, automated testing, GitHub Actions, documentation and error handling.
+
+The final implementation and testing were performed within the LifeIndex project, and generated suggestions were not accepted without checking that they worked with the existing application.
+
+AI was therefore used as a development and learning assistant while responsibility for the final project, testing and submission remained with me.
+
+
+
 ## Technology Stack
 
 ### Android
@@ -190,3 +248,5 @@ Settings are stored through the REST API and database.
                                   | Node.js / Express
                                   v
                          Supabase PostgreSQL
+
+
