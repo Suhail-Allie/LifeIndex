@@ -16,3 +16,9 @@ local.properties
 
 .env
 node_modules/
+
+# Firebase Admin credentials
+backend/firebase-service-account.json
+# Firebase Admin SDK private credentials - NEVER COMMIT
+backend/*firebase-adminsdk*.json
+backend/firebase-service-account.json

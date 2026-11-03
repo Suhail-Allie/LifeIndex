@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994616732428",
+    "project_id": "lifeindex-5ac39",
+    "storage_bucket": "lifeindex-5ac39.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994616732428:android:8ac4faf3e9ee8190c2f729",
+        "android_client_info": {
+          "package_name": "com.lifeindex.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDI6gF8rdEAo-ZlaDhtMxGHXHe_Ewsasgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

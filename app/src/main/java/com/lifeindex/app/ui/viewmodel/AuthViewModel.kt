@@ -1,10 +1,13 @@
 package com.lifeindex.app.ui.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.lifeindex.app.data.local.SessionManager
 import com.lifeindex.app.data.repository.AuthRepository
+import com.lifeindex.app.notifications.FcmTokenRegistrar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,42 +37,25 @@ class AuthViewModel(
             _uiState.value = AuthUiState(isLoading = true)
 
             try {
-                val response = repository.register(
-                    displayName,
-                    email,
-                    password
-                )
+                val response = repository.register(displayName, email, password)
 
                 if (response.isSuccessful) {
                     val authResponse = response.body()
-
                     val accessToken = authResponse?.accessToken
                     val refreshToken = authResponse?.refreshToken
                     val userId = authResponse?.user?.id
 
-                    if (
-                        accessToken != null &&
-                        refreshToken != null &&
-                        userId != null
-                    ) {
-                        sessionManager.saveSession(
-                            accessToken = accessToken,
-                            refreshToken = refreshToken,
-                            userId = userId
-                        )
-
-                        _uiState.value = AuthUiState(
-                            isSuccess = true
-                        )
+                    if (accessToken != null && refreshToken != null && userId != null) {
+                        sessionManager.saveSession(accessToken, refreshToken, userId)
+                        registerPushToken(accessToken)
+                        _uiState.value = AuthUiState(isSuccess = true)
                     } else {
                         _uiState.value = AuthUiState(
                             errorMessage = "Registration response was incomplete"
                         )
                     }
                 } else {
-                    _uiState.value = AuthUiState(
-                        errorMessage = "Registration failed"
-                    )
+                    _uiState.value = AuthUiState(errorMessage = "Registration failed")
                 }
             } catch (error: Exception) {
                 _uiState.value = AuthUiState(
@@ -79,40 +65,23 @@ class AuthViewModel(
         }
     }
 
-    fun login(
-        email: String,
-        password: String
-    ) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _uiState.value = AuthUiState(isLoading = true)
 
             try {
-                val response = repository.login(
-                    email,
-                    password
-                )
+                val response = repository.login(email, password)
 
                 if (response.isSuccessful) {
                     val authResponse = response.body()
-
                     val accessToken = authResponse?.accessToken
                     val refreshToken = authResponse?.refreshToken
                     val userId = authResponse?.user?.id
 
-                    if (
-                        accessToken != null &&
-                        refreshToken != null &&
-                        userId != null
-                    ) {
-                        sessionManager.saveSession(
-                            accessToken = accessToken,
-                            refreshToken = refreshToken,
-                            userId = userId
-                        )
-
-                        _uiState.value = AuthUiState(
-                            isSuccess = true
-                        )
+                    if (accessToken != null && refreshToken != null && userId != null) {
+                        sessionManager.saveSession(accessToken, refreshToken, userId)
+                        registerPushToken(accessToken)
+                        _uiState.value = AuthUiState(isSuccess = true)
                     } else {
                         _uiState.value = AuthUiState(
                             errorMessage = "Login response was incomplete"
@@ -129,6 +98,32 @@ class AuthViewModel(
                 )
             }
         }
+    }
+
+    // Register the current installation after either registration or login.
+    // FCM token retrieval is asynchronous and must not block authentication.
+    private fun registerPushToken(accessToken: String) {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("LifeIndexFCM", "Unable to obtain FCM token", task.exception)
+                    return@addOnCompleteListener
+                }
+
+                val fcmToken = task.result ?: return@addOnCompleteListener
+                viewModelScope.launch {
+                    try {
+                        FcmTokenRegistrar.register(
+                            getApplication<Application>(),
+                            accessToken,
+                            fcmToken
+                        )
+                        Log.d("LifeIndexFCM", "Device registered for push notifications")
+                    } catch (error: Exception) {
+                        Log.w("LifeIndexFCM", "Device registration will need retry", error)
+                    }
+                }
+            }
     }
 
     fun clearState() {

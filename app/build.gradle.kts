@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -61,4 +62,13 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Firebase platform version management
+    implementation(platform(libs.firebase.bom))
+
+// Firestore: NoSQL notification storage and retrieval
+    implementation(libs.firebase.firestore)
+
+// Firebase Cloud Messaging: push notifications
+    implementation(libs.firebase.messaging)
 }

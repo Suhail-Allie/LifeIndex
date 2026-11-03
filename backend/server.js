@@ -1,4 +1,4 @@
-const dns = require("dns");
+﻿const dns = require("dns");
 dns.setDefaultResultOrder("ipv4first");
 
 const express = require("express");
@@ -14,6 +14,8 @@ const templateRoutes = require("./routes/templateRoutes");
 const fieldRoutes = require("./routes/fieldRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const searchRoutes = require("./routes/searchRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const deviceRoutes = require("./routes/deviceRoutes");
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL
@@ -37,6 +39,8 @@ app.use("/api/v1/templates", templateRoutes);
 app.use("/api/v1", fieldRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1/devices", deviceRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {

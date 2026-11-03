@@ -1,6 +1,7 @@
-package com.lifeindex.app.data.remote
+﻿package com.lifeindex.app.data.remote
 
 import com.lifeindex.app.data.model.AuthResponse
+import com.lifeindex.app.data.model.DeviceRegistrationRequest
 import com.lifeindex.app.data.model.LoginRequest
 import com.lifeindex.app.data.model.RegisterRequest
 import com.lifeindex.app.data.model.RefreshTokenRequest
@@ -138,6 +139,11 @@ interface ApiService {
         @Path("id") trackerId: String
     ): Response<TrackerResponse>
 
+    @POST("devices/register")
+    suspend fun registerDevice(
+        @Header("Authorization") token: String,
+        @Body request: DeviceRegistrationRequest
+    ): Response<MessageResponse>
     @POST("auth/refresh")
     fun refresh(
         @Body request: RefreshTokenRequest
