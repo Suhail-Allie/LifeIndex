@@ -71,4 +71,9 @@ dependencies {
 
 // Firebase Cloud Messaging: push notifications
     implementation(libs.firebase.messaging)
+
+    // Google Sign-In using Android Credential Manager.
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 }

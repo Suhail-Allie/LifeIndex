@@ -2,6 +2,7 @@ package com.lifeindex.app.data.repository
 
 import com.lifeindex.app.data.model.AuthResponse
 import com.lifeindex.app.data.model.LoginRequest
+import com.lifeindex.app.data.model.GoogleAuthRequest
 import com.lifeindex.app.data.model.RegisterRequest
 import com.lifeindex.app.data.remote.ApiService
 import com.lifeindex.app.data.remote.RetrofitClient
@@ -37,6 +38,12 @@ class AuthRepository(
                 password = password
             )
         )
+    }
+
+    suspend fun loginWithGoogle(
+        idToken: String
+    ): Response<AuthResponse> {
+        return apiService.loginWithGoogle(GoogleAuthRequest(idToken))
     }
 
     suspend fun logout(

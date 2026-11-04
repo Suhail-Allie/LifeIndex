@@ -100,6 +100,42 @@ class AuthViewModel(
         }
     }
 
+    fun loginWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState(isLoading = true)
+
+            try {
+                val response = repository.loginWithGoogle(idToken)
+
+                if (response.isSuccessful) {
+                    val authResponse = response.body()
+                    val accessToken = authResponse?.accessToken
+                    val refreshToken = authResponse?.refreshToken
+                    val userId = authResponse?.user?.id
+
+                    if (accessToken != null && refreshToken != null && userId != null) {
+                        sessionManager.saveSession(accessToken, refreshToken, userId)
+                        registerPushToken(accessToken)
+                        _uiState.value = AuthUiState(isSuccess = true)
+                    } else {
+                        _uiState.value = AuthUiState(
+                            errorMessage = "Google sign-in response was incomplete"
+                        )
+                    }
+                } else {
+                    _uiState.value = AuthUiState(
+                        errorMessage = "Google sign-in failed (${response.code()}). Check the account and try again."
+                    )
+                }
+            } catch (error: Exception) {
+                Log.e("LifeIndexAuth", "Google sign-in failed", error)
+                _uiState.value = AuthUiState(
+                    errorMessage = "Unable to complete Google sign-in. Please try again."
+                )
+            }
+        }
+    }
+
     // Register the current installation after either registration or login.
     // FCM token retrieval is asynchronous and must not block authentication.
     private fun registerPushToken(accessToken: String) {

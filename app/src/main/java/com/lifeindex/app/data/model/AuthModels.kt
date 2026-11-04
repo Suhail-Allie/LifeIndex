@@ -24,6 +24,10 @@ data class AuthResponse(
     val user: UserResponse? = null
 )
 
+data class GoogleAuthRequest(
+    val idToken: String
+)
+
 data class RefreshTokenRequest(
     val refreshToken: String
 )

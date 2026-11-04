@@ -1,6 +1,7 @@
-﻿package com.lifeindex.app.data.remote
+package com.lifeindex.app.data.remote
 
 import com.lifeindex.app.data.model.AuthResponse
+import com.lifeindex.app.data.model.GoogleAuthRequest
 import com.lifeindex.app.data.model.DeviceRegistrationRequest
 import com.lifeindex.app.data.model.LoginRequest
 import com.lifeindex.app.data.model.RegisterRequest
@@ -49,6 +50,11 @@ interface ApiService {
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequest
+    ): Response<AuthResponse>
+
+    @POST("auth/google")
+    suspend fun loginWithGoogle(
+        @Body request: GoogleAuthRequest
     ): Response<AuthResponse>
 
     @GET("users/me/settings")

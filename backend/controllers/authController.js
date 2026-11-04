@@ -1,4 +1,7 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
+const googleOAuthClient = new OAuth2Client();
 const pool = require("../db");
 
 const {
@@ -268,9 +271,164 @@ const logoutUser = async (req, res) => {
     }
 };
 
+
+// Verify a Google ID token, link it to an existing email account when safe,
+// and issue the same LifeIndex JWT session used by password authentication.
+const googleLogin = async (req, res) => {
+    let client;
+
+    try {
+        const { idToken } = req.body || {};
+
+        if (typeof idToken !== "string" || !idToken.trim()) {
+            return res.status(400).json({
+                message: "Google ID token is required"
+            });
+        }
+
+        const webClientId = process.env.GOOGLE_WEB_CLIENT_ID;
+
+        if (!webClientId) {
+            console.error("Google sign-in is missing GOOGLE_WEB_CLIENT_ID");
+            return res.status(503).json({
+                message: "Google sign-in is not configured"
+            });
+        }
+
+        const ticket = await googleOAuthClient.verifyIdToken({
+            idToken: idToken.trim(),
+            audience: webClientId
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload || !payload.sub || !payload.email || payload.email_verified !== true) {
+            return res.status(401).json({
+                message: "Google account could not be verified"
+            });
+        }
+
+        const googleSub = payload.sub;
+        const normalizedEmail = payload.email.toLowerCase();
+
+        const proposedName = (
+            payload.name ||
+            normalizedEmail.split("@")[0] ||
+            "Google User"
+        ).trim().slice(0, 80);
+
+        const displayName = proposedName.length >= 2
+            ? proposedName
+            : "Google User";
+
+        client = await pool.connect();
+        await client.query("BEGIN");
+
+        const matches = await client.query(
+            `SELECT id, display_name, email, google_sub
+             FROM users
+             WHERE LOWER(email) = $1 OR google_sub = $2
+             FOR UPDATE`,
+            [normalizedEmail, googleSub]
+        );
+
+        if (matches.rows.length > 1) {
+            await client.query("ROLLBACK");
+
+            return res.status(409).json({
+                message: "This Google identity conflicts with more than one LifeIndex account"
+            });
+        }
+
+        let user;
+
+        if (matches.rows.length === 1) {
+            const existing = matches.rows[0];
+
+            if (existing.google_sub && existing.google_sub !== googleSub) {
+                await client.query("ROLLBACK");
+
+                return res.status(409).json({
+                    message: "This email is already linked to a different Google account"
+                });
+            }
+
+            const linked = await client.query(
+                `UPDATE users
+                 SET google_sub = COALESCE(google_sub, $1)
+                 WHERE id = $2
+                 RETURNING id, display_name, email`,
+                [googleSub, existing.id]
+            );
+
+            user = linked.rows[0];
+        } else {
+            // Google-only users receive an unusable random password hash to satisfy
+            // the existing NOT NULL password_hash column without exposing a password.
+            const randomPassword = crypto.randomBytes(48).toString("hex");
+            const passwordHash = await bcrypt.hash(randomPassword, 12);
+
+            const inserted = await client.query(
+                `INSERT INTO users (display_name, email, password_hash, google_sub)
+                 VALUES ($1, $2, $3, $4)
+                 RETURNING id, display_name, email`,
+                [displayName, normalizedEmail, passwordHash, googleSub]
+            );
+
+            user = inserted.rows[0];
+        }
+
+        await client.query(
+            `INSERT INTO user_settings (user_id)
+             VALUES ($1)
+             ON CONFLICT (user_id) DO NOTHING`,
+            [user.id]
+        );
+
+        const accessToken = generateAccessToken(user.id);
+        const refreshToken = generateRefreshToken(user.id);
+        const refreshTokenHash = hashToken(refreshToken);
+
+        await client.query(
+            `INSERT INTO refresh_sessions (user_id, token_hash, expires_at)
+             VALUES ($1, $2, NOW() + INTERVAL '30 days')`,
+            [user.id, refreshTokenHash]
+        );
+
+        await client.query("COMMIT");
+
+        return res.json({
+            message: "Google login successful",
+            accessToken,
+            refreshToken,
+            user
+        });
+
+    } catch (error) {
+        if (client) {
+            try {
+                await client.query("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("Google login rollback error:", rollbackError);
+            }
+        }
+
+        console.error("Google login error:", error);
+
+        return res.status(401).json({
+            message: "Google sign-in could not be verified"
+        });
+
+    } finally {
+        if (client) {
+            client.release();
+        }
+    }
+};
 module.exports = {
     registerUser,
     loginUser,
+    googleLogin,
     refreshAccessToken,
     logoutUser
 };
