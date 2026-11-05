@@ -111,6 +111,7 @@ const getTrackers = async (req, res) => {
         const result = await pool.query(
             `SELECT
                 id,
+                user_id,
                 title,
                 tracker_type,
                 status,
@@ -120,6 +121,7 @@ const getTrackers = async (req, res) => {
                 category_id,
                 template_id,
                 is_archived,
+                version,
                 created_at,
                 updated_at
              FROM trackers
@@ -147,6 +149,7 @@ const getTrackerById = async (req, res) => {
         const result = await pool.query(
             `SELECT
                 id,
+                user_id,
                 title,
                 tracker_type,
                 status,
@@ -156,6 +159,7 @@ const getTrackerById = async (req, res) => {
                 category_id,
                 template_id,
                 is_archived,
+                version,
                 created_at,
                 updated_at
              FROM trackers
@@ -215,6 +219,7 @@ const updateTracker = async (req, res) => {
                  priority = COALESCE($5, priority),
                  important_date = COALESCE($6, important_date),
                  notes = COALESCE($7, notes),
+                 version = version + 1,
                  updated_at = NOW()
              WHERE id = $8
              AND user_id = $9

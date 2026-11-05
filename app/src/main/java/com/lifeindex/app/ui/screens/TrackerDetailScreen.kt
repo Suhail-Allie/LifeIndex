@@ -110,6 +110,23 @@ fun TrackerDetailScreen(
 
         Text("Tracker Details")
 
+        if (uiState.tracker?.sync_state == "CONFLICT") {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "This tracker was changed on another device. Choose which copy to keep.",
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                )
+                Button(
+                    onClick = { trackerDetailViewModel.useServerVersion(trackerId) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("Use server version") }
+                Button(
+                    onClick = { trackerDetailViewModel.keepLocalVersion(trackerId) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("Keep my local copy") }
+            }
+        }
+
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },

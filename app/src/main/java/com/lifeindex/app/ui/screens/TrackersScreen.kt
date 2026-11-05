@@ -362,6 +362,16 @@ fun TrackersScreen(
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
+                        Text(
+                            text = when (tracker.sync_state) {
+                                "PENDING" -> "Waiting to sync"
+                                "CONFLICT" -> "Sync conflict â€” open to resolve"
+                                else -> "Synced"
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (tracker.sync_state == "CONFLICT") MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.primary
+                        )
 
                         Text(
                             text =

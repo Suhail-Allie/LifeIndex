@@ -13,7 +13,9 @@ data class TrackerData(
     val notes: String?,
     val is_archived: Boolean,
     val created_at: String,
-    val updated_at: String
+    val updated_at: String,
+    val version: Int = 1,
+    val sync_state: String? = "SYNCED"
 )
 
 data class TrackersResponse(

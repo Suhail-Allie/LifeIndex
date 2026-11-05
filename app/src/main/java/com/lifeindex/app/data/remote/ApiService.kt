@@ -10,6 +10,8 @@ import com.lifeindex.app.data.model.MessageResponse
 import com.lifeindex.app.data.model.CreateTrackerRequest
 import com.lifeindex.app.data.model.TrackerResponse
 import com.lifeindex.app.data.model.TrackersResponse
+import com.lifeindex.app.data.model.TrackerSyncRequest
+import com.lifeindex.app.data.model.TrackerSyncResponse
 import retrofit2.http.DELETE
 import retrofit2.http.Path
 import retrofit2.Response
@@ -78,6 +80,12 @@ interface ApiService {
     suspend fun getTrackers(
         @Header("Authorization") token: String
     ): Response<TrackersResponse>
+
+    @POST("trackers/sync")
+    suspend fun syncTrackers(
+        @Header("Authorization") token: String,
+        @Body request: TrackerSyncRequest
+    ): Response<TrackerSyncResponse>
 
     @POST("trackers")
     suspend fun createTracker(

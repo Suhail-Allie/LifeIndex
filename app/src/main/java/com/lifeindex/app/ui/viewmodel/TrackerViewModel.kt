@@ -9,6 +9,7 @@ import com.lifeindex.app.data.model.TrackerData
 import com.lifeindex.app.data.repository.TrackerRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 data class TrackerUiState(
@@ -19,99 +20,60 @@ data class TrackerUiState(
     val errorMessage: String? = null
 )
 
-class TrackerViewModel(
-    application: Application
-) : AndroidViewModel(application) {
-
-    private val repository = TrackerRepository()
+class TrackerViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = TrackerRepository(application)
     private val sessionManager = SessionManager(application)
-
     private val _uiState = MutableStateFlow(TrackerUiState())
     val uiState: StateFlow<TrackerUiState> = _uiState
 
     fun loadTrackers() {
         val token = sessionManager.getAccessToken()
-
-        if (token == null) {
-            _uiState.value = TrackerUiState(
-                errorMessage = "You are not signed in"
-            )
+        val userId = sessionManager.getUserId()
+        if (token == null || userId == null) {
+            _uiState.value = TrackerUiState(errorMessage = "You are not signed in")
             return
         }
 
         viewModelScope.launch {
-            _uiState.value = TrackerUiState(isLoading = true)
-
-            try {
-                val response = repository.getTrackers(token)
-
-                if (response.isSuccessful) {
-                    _uiState.value = TrackerUiState(
-                        trackers = response.body()?.trackers ?: emptyList()
-                    )
-                } else {
-                    _uiState.value = TrackerUiState(
-                        errorMessage = "Unable to load trackers"
-                    )
-                }
-            } catch (error: Exception) {
-                _uiState.value = TrackerUiState(
-                    errorMessage = "Unable to connect to the server"
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            repository.observeTrackers(userId).collect { trackers ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    trackers = trackers,
+                    errorMessage = null
                 )
+            }
+        }
+        viewModelScope.launch {
+            try {
+                repository.refreshTrackers(userId, token)
+            } catch (_: Exception) {
+                // Keep the Room cache available when the network is unavailable.
             }
         }
     }
 
-    fun createTracker(
-        title: String,
-        trackerType: String,
-        templateId: String?
-    ) {
-        val token = sessionManager.getAccessToken()
-
-        if (token == null) {
-            _uiState.value = _uiState.value.copy(
-                errorMessage = "You are not signed in"
-            )
+    fun createTracker(title: String, trackerType: String, templateId: String?) {
+        val userId = sessionManager.getUserId()
+        if (userId == null) {
+            _uiState.value = _uiState.value.copy(errorMessage = "You are not signed in")
             return
         }
-
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(
-                isCreating = true,
-                errorMessage = null,
-                message = null
-            )
-
+            _uiState.value = _uiState.value.copy(isCreating = true, errorMessage = null, message = null)
             try {
-                val request = CreateTrackerRequest(
-                    title = title,
-                    trackerType = trackerType,
-                    templateId = templateId
+                repository.createTracker(
+                    userId,
+                    CreateTrackerRequest(title = title, trackerType = trackerType, templateId = templateId)
                 )
-
-                val response = repository.createTracker(
-                    token,
-                    request
+                _uiState.value = _uiState.value.copy(
+                    isCreating = false,
+                    message = "Saved on this device. Sync will run when a connection is available."
                 )
-
-                if (response.isSuccessful) {
-                    _uiState.value = _uiState.value.copy(
-                        isCreating = false,
-                        message = "Tracker created successfully"
-                    )
-
-                    loadTrackers()
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        isCreating = false,
-                        errorMessage = "Unable to create tracker"
-                    )
-                }
             } catch (error: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isCreating = false,
-                    errorMessage = "Unable to connect to the server"
+                    errorMessage = error.message ?: "Unable to save tracker locally"
                 )
             }
         }

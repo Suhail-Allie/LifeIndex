@@ -11,8 +11,12 @@ const {
 } = require("../controllers/trackerController");
 
 const authenticateToken = require("../middleware/authMiddleware");
+const { syncTrackers } = require("../controllers/trackerSyncController");
 
 const router = express.Router();
+
+// Must be declared before the parameterised tracker routes.
+router.post("/sync", authenticateToken, syncTrackers);
 
 router.post(
     "/",

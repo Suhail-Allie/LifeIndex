@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.lifeindex.app.data.remote.RetrofitClient
 import com.lifeindex.app.navigation.LifeIndexNavGraph
 import com.lifeindex.app.notifications.NotificationHelper
+import com.lifeindex.app.data.sync.TrackerSyncScheduler
 import com.lifeindex.app.ui.theme.LifeIndexTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
 
         Log.d("LifeIndex", "Starting LifeIndex application")
         RetrofitClient.initialize(applicationContext)
+        TrackerSyncScheduler.schedulePeriodic(applicationContext)
         Log.d("LifeIndex", "Retrofit client initialized")
 
         NotificationHelper.createNotificationChannel(this)
