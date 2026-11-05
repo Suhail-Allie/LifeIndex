@@ -45,6 +45,7 @@ The project was developed for the **OPSC6312 – Open Source Coding Intermediate
 - [Innovative features](#innovative-features)
 - [Screenshots and demonstration video](#screenshots-and-demonstration-video)
 - [Known implementation scope](#known-implementation-scope)
+- [AI usage declaration](#ai-usage-declaration)
 - [References](#references)
 
 ---
@@ -476,6 +477,12 @@ The following scope notes keep the documentation aligned with the implementation
 - The Settings screen includes a default reminder lead-time preference. This README does not claim a complete reminder scheduling and recurrence workflow.
 - The Android debug APK has been built and installed on the Redmi 10 2022. Final functional checks on the physical device should be demonstrated separately from emulator tests.
 - Google Play publication evidence, a signed release bundle and the final demonstration-video link must be added when those submission items are prepared.
+
+---
+
+## AI usage declaration
+
+The AI usage declaration for this assessment is provided in [`AI_USAGE.md`](AI_USAGE.md). It describes how ChatGPT was used during requirement analysis, coding assistance, debugging and technical writing, and how AI-assisted suggestions were reviewed and tested.
 
 ---
 
