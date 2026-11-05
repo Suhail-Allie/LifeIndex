@@ -33,6 +33,8 @@ import com.lifeindex.app.auth.GoogleSignInHelper
 import com.lifeindex.app.ui.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
 import com.lifeindex.app.util.ValidationUtils
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun LoginScreen(
@@ -49,6 +51,10 @@ fun LoginScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val uiState by authViewModel.uiState.collectAsState()
+    val pleaseEnterEmailText = stringResource(R.string.please_enter_email)
+    val validEmailText = stringResource(R.string.valid_email)
+    val enterPasswordText = stringResource(R.string.enter_password)
+    val googleSigninFailedText = stringResource(R.string.google_signin_failed)
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
@@ -74,14 +80,14 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Track anything. Find everything.",
+            text = stringResource(R.string.app_tagline),
             style = MaterialTheme.typography.bodyLarge
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Welcome back",
+            text = stringResource(R.string.welcome_back),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
@@ -95,7 +101,7 @@ fun LoginScreen(
                 validationError = null
             },
             label = {
-                Text("Email")
+                Text(stringResource(R.string.email))
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -110,7 +116,7 @@ fun LoginScreen(
                 validationError = null
             },
             label = {
-                Text("Password")
+                Text(stringResource(R.string.password))
             },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
@@ -153,13 +159,13 @@ fun LoginScreen(
 
                 when {
                     email.isBlank() ->
-                        validationError = "Please enter your email."
+                        validationError = pleaseEnterEmailText
 
                     !ValidationUtils.isValidEmail(email) ->
-                        validationError = "Please enter a valid email address."
+                        validationError = validEmailText
 
                     !ValidationUtils.isValidLoginPassword(password) ->
-                        validationError = "Please enter your password."
+                        validationError = enterPasswordText
 
                     else -> {
                         validationError = null
@@ -177,7 +183,7 @@ fun LoginScreen(
             if (uiState.isLoading) {
                 CircularProgressIndicator()
             } else {
-                Text("Log In")
+                Text(stringResource(R.string.log_in))
             }
         }
 
@@ -186,7 +192,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "OR",
+            text = stringResource(R.string.or),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -205,7 +211,7 @@ fun LoginScreen(
                     } catch (error: Exception) {
                         googleError = error.message
                             ?.takeIf { it.isNotBlank() }
-                            ?: "Google sign-in was cancelled or could not be completed."
+                            ?: googleSigninFailedText
                     } finally {
                         googleLoading = false
                     }
@@ -217,7 +223,7 @@ fun LoginScreen(
             if (googleLoading) {
                 CircularProgressIndicator()
             } else {
-                Text("Continue with Google")
+                Text(stringResource(R.string.continue_google))
             }
         }
 
@@ -226,7 +232,7 @@ fun LoginScreen(
         TextButton(
             onClick = onRegisterClick
         ) {
-            Text("Create an account")
+            Text(stringResource(R.string.create_an_account))
         }
     }
 }

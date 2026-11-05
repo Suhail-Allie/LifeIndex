@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "@google-cloud/firestore": "^9.4.0",
+    "@supabase/supabase-js": "^2.119.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -19,6 +20,7 @@
     "firebase-admin": "^14.5.0",
     "google-auth-library": "^11.3.3",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0",
     "pg": "^8.23.0"
   }
 }

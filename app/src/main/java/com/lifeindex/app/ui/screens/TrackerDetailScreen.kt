@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeindex.app.data.model.FieldValueRequest
 import com.lifeindex.app.ui.viewmodel.TrackerDetailViewModel
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun TrackerDetailScreen(
@@ -108,22 +110,22 @@ fun TrackerDetailScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        Text("Tracker Details")
+        Text(stringResource(R.string.tracker_details))
 
         if (uiState.tracker?.sync_state == "CONFLICT") {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "This tracker was changed on another device. Choose which copy to keep.",
+                    stringResource(R.string.conflict_message),
                     color = androidx.compose.material3.MaterialTheme.colorScheme.error
                 )
                 Button(
                     onClick = { trackerDetailViewModel.useServerVersion(trackerId) },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("Use server version") }
+                ) { Text(stringResource(R.string.use_server_version)) }
                 Button(
                     onClick = { trackerDetailViewModel.keepLocalVersion(trackerId) },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("Keep my local copy") }
+                ) { Text(stringResource(R.string.keep_local_copy)) }
             }
         }
 
@@ -132,7 +134,7 @@ fun TrackerDetailScreen(
             onValueChange = { title = it },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text("Title")
+                Text(stringResource(R.string.title))
             },
             singleLine = true
         )
@@ -142,7 +144,7 @@ fun TrackerDetailScreen(
             onValueChange = { trackerType = it },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text("Type")
+                Text(stringResource(R.string.type))
             },
             singleLine = true
         )
@@ -152,7 +154,7 @@ fun TrackerDetailScreen(
             onValueChange = { status = it },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text("Status")
+                Text(stringResource(R.string.status))
             },
             singleLine = true
         )
@@ -162,7 +164,7 @@ fun TrackerDetailScreen(
             onValueChange = { priority = it },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text("Priority")
+                Text(stringResource(R.string.priority))
             },
             singleLine = true
         )
@@ -172,7 +174,7 @@ fun TrackerDetailScreen(
             onValueChange = { notes = it },
             modifier = Modifier.fillMaxWidth(),
             label = {
-                Text("Notes")
+                Text(stringResource(R.string.notes))
             }
         )
 
@@ -189,10 +191,10 @@ fun TrackerDetailScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Save Tracker")
+            Text(stringResource(R.string.save_tracker))
         }
 
-        Text("Custom Fields")
+        Text(stringResource(R.string.custom_fields))
 
         uiState.fields.forEach { field ->
 
@@ -231,7 +233,7 @@ fun TrackerDetailScreen(
 
                 else -> {
                     Text(
-                        "Field type: ${field.field_type}"
+                        stringResource(R.string.field_type, field.field_type)
                     )
                 }
             }
@@ -275,7 +277,7 @@ fun TrackerDetailScreen(
             if (uiState.isSaving) {
                 CircularProgressIndicator()
             } else {
-                Text("Save Fields")
+                Text(stringResource(R.string.save_fields))
             }
         }
 
@@ -291,7 +293,7 @@ fun TrackerDetailScreen(
             if (uiState.isArchiving) {
                 CircularProgressIndicator()
             } else {
-                Text("Archive Tracker")
+                Text(stringResource(R.string.archive_tracker))
             }
         }
 
@@ -302,7 +304,7 @@ fun TrackerDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.isDeleting
         ) {
-            Text("Delete Tracker")
+            Text(stringResource(R.string.delete_tracker))
         }
 
         uiState.message?.let {
@@ -317,7 +319,7 @@ fun TrackerDetailScreen(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Back")
+            Text(stringResource(R.string.back))
         }
     }
 
@@ -329,11 +331,11 @@ fun TrackerDetailScreen(
                 }
             },
             title = {
-                Text("Delete Tracker?")
+                Text(stringResource(R.string.delete_tracker_question))
             },
             text = {
                 Text(
-                    "This will permanently remove this tracker and its data."
+                    stringResource(R.string.delete_tracker_warning)
                 )
             },
             confirmButton = {
@@ -346,7 +348,7 @@ fun TrackerDetailScreen(
                     },
                     enabled = !uiState.isDeleting
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
@@ -355,7 +357,7 @@ fun TrackerDetailScreen(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )

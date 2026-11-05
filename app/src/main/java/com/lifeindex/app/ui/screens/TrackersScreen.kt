@@ -31,6 +31,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeindex.app.data.model.TemplateData
 import com.lifeindex.app.ui.viewmodel.TemplateViewModel
 import com.lifeindex.app.ui.viewmodel.TrackerViewModel
+import com.lifeindex.app.ui.localizedTrackerType
+import com.lifeindex.app.ui.localizedTrackerTag
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun TrackersScreen(
@@ -85,13 +89,13 @@ fun TrackersScreen(
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Text(
-                    text = "Trackers",
+                    text = stringResource(R.string.trackers_title),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
-                    text = "Keep important parts of your life in one place.",
+                    text = stringResource(R.string.trackers_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -112,7 +116,7 @@ fun TrackersScreen(
                 ) {
 
                     Text(
-                        text = "Create a tracker",
+                        text = stringResource(R.string.create_tracker),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -123,17 +127,17 @@ fun TrackersScreen(
                             title = it
                         },
                         label = {
-                            Text("Name")
+                            Text(stringResource(R.string.name))
                         },
                         placeholder = {
-                            Text("e.g. Passport")
+                            Text(stringResource(R.string.example_passport))
                         },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     Text(
-                        text = "Type",
+                        text = stringResource(R.string.type),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -156,10 +160,11 @@ fun TrackersScreen(
                                 },
                                 label = {
                                     Text(
-                                        type.lowercase()
-                                            .replaceFirstChar {
-                                                it.uppercase()
-                                            }
+                                        when (type) {
+                                            "ITEM" -> stringResource(R.string.type_item)
+                                            "PROCESS" -> stringResource(R.string.type_process)
+                                            else -> stringResource(R.string.type_recurring)
+                                        }
                                     )
                                 }
                             )
@@ -167,7 +172,7 @@ fun TrackersScreen(
                     }
 
                     Text(
-                        text = "Use a template",
+                        text = stringResource(R.string.use_template),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -209,9 +214,9 @@ fun TrackersScreen(
                     ) {
                         Text(
                             if (trackerState.isCreating)
-                                "Creating..."
+                                stringResource(R.string.creating)
                             else
-                                "Create Tracker"
+                                stringResource(R.string.create_tracker_button)
                         )
                     }
                 }
@@ -223,7 +228,7 @@ fun TrackersScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "Your trackers",
+                    text = stringResource(R.string.your_trackers),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -234,10 +239,10 @@ fun TrackersScreen(
                         searchText = it
                     },
                     label = {
-                        Text("Search")
+                        Text(stringResource(R.string.search))
                     },
                     placeholder = {
-                        Text("Search by tracker name")
+                        Text(stringResource(R.string.search_by_tracker))
                     },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -254,7 +259,7 @@ fun TrackersScreen(
                             selectedFilter = "ALL"
                         },
                         label = {
-                            Text("All")
+                            Text(stringResource(R.string.all))
                         }
                     )
 
@@ -264,7 +269,7 @@ fun TrackersScreen(
                             selectedFilter = "ITEM"
                         },
                         label = {
-                            Text("Items")
+                            Text(stringResource(R.string.items))
                         }
                     )
 
@@ -274,7 +279,7 @@ fun TrackersScreen(
                             selectedFilter = "PROCESS"
                         },
                         label = {
-                            Text("Processes")
+                            Text(stringResource(R.string.processes))
                         }
                     )
 
@@ -284,7 +289,7 @@ fun TrackersScreen(
                             selectedFilter = "RECURRING"
                         },
                         label = {
-                            Text("Recurring")
+                            Text(stringResource(R.string.recurring))
                         }
                     )
                 }
@@ -320,7 +325,7 @@ fun TrackersScreen(
                         verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
                         Text(
-                            text = "No trackers found",
+                            text = stringResource(R.string.no_trackers_found),
                             fontWeight = FontWeight.SemiBold
                         )
 
@@ -329,9 +334,9 @@ fun TrackersScreen(
                                 searchText.isNotBlank() ||
                                 selectedFilter != "ALL"
                             ) {
-                                "Try changing your search or filter."
+                                stringResource(R.string.change_search_filter)
                             } else {
-                                "Create your first tracker above."
+                                stringResource(R.string.create_first_tracker)
                             },
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -364,9 +369,9 @@ fun TrackersScreen(
                         )
                         Text(
                             text = when (tracker.sync_state) {
-                                "PENDING" -> "Waiting to sync"
-                                "CONFLICT" -> "Sync conflict â€” open to resolve"
-                                else -> "Synced"
+                                "PENDING" -> stringResource(R.string.waiting_to_sync)
+                                "CONFLICT" -> stringResource(R.string.sync_conflict)
+                                else -> stringResource(R.string.synced)
                             },
                             style = MaterialTheme.typography.labelSmall,
                             color = if (tracker.sync_state == "CONFLICT") MaterialTheme.colorScheme.error
@@ -375,10 +380,7 @@ fun TrackersScreen(
 
                         Text(
                             text =
-                                "${tracker.tracker_type.lowercase()
-                                    .replaceFirstChar {
-                                        it.uppercase()
-                                    }}  •  ${tracker.status ?: "ACTIVE"}",
+                                "${localizedTrackerType(tracker.tracker_type)}  •  ${localizedTrackerTag(tracker.status ?: "ACTIVE")}",
                             style = MaterialTheme.typography.bodySmall,
                             color =
                                 MaterialTheme.colorScheme
@@ -390,7 +392,7 @@ fun TrackersScreen(
                                 onTrackerClick(tracker.id)
                             }
                         ) {
-                            Text("Open tracker")
+                            Text(stringResource(R.string.open_tracker))
                         }
                     }
                 }

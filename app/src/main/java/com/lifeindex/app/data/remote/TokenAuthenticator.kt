@@ -25,8 +25,8 @@ class TokenAuthenticator(
             return null
         }
 
-        val request = response.request()
-        val path = request.url().encodedPath()
+        val request = response.request
+        val path = request.url.encodedPath
 
         // Do not attempt refresh for authentication endpoints.
         if (
@@ -126,11 +126,11 @@ class TokenAuthenticator(
     private fun responseCount(response: Response): Int {
 
         var count = 1
-        var previous = response.priorResponse()
+        var previous = response.priorResponse
 
         while (previous != null) {
             count++
-            previous = previous.priorResponse()
+            previous = previous.priorResponse
         }
 
         return count

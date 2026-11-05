@@ -1,5 +1,12 @@
 package com.lifeindex.app.data.remote
 
+import com.lifeindex.app.data.model.AttachmentsResponse
+import com.lifeindex.app.data.model.AttachmentUploadResponse
+import com.lifeindex.app.data.model.AttachmentDownloadResponse
+import okhttp3.MultipartBody
+import retrofit2.http.Multipart
+import retrofit2.http.Part
+
 import com.lifeindex.app.data.model.AuthResponse
 import com.lifeindex.app.data.model.GoogleAuthRequest
 import com.lifeindex.app.data.model.DeviceRegistrationRequest
@@ -152,6 +159,31 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") trackerId: String
     ): Response<TrackerResponse>
+
+    @GET("attachments")
+    suspend fun getAttachments(
+        @Header("Authorization") token: String
+    ): Response<AttachmentsResponse>
+
+    @Multipart
+    @POST("trackers/{trackerId}/attachments")
+    suspend fun uploadAttachment(
+        @Header("Authorization") token: String,
+        @Path("trackerId") trackerId: String,
+        @Part file: MultipartBody.Part
+    ): Response<AttachmentUploadResponse>
+
+    @GET("attachments/{id}/download")
+    suspend fun getAttachmentDownloadUrl(
+        @Header("Authorization") token: String,
+        @Path("id") attachmentId: String
+    ): Response<AttachmentDownloadResponse>
+
+    @DELETE("attachments/{id}")
+    suspend fun deleteAttachment(
+        @Header("Authorization") token: String,
+        @Path("id") attachmentId: String
+    ): Response<MessageResponse>
 
     @POST("devices/register")
     suspend fun registerDevice(

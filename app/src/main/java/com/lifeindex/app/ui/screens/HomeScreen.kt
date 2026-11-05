@@ -35,6 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeindex.app.ui.viewmodel.DashboardViewModel
+import com.lifeindex.app.ui.localizedTrackerTag
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun HomeScreen(
@@ -65,7 +68,7 @@ fun HomeScreen(
                 )
 
                 Text(
-                    text = "Your personal life, organised.",
+                    text = stringResource(R.string.home_tagline),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -103,7 +106,7 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "Dashboard unavailable",
+                            text = stringResource(R.string.dashboard_unavailable),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -118,7 +121,7 @@ fun HomeScreen(
                                 dashboardViewModel.loadDashboard()
                             }
                         ) {
-                            Text("Try Again")
+                            Text(stringResource(R.string.try_again))
                         }
                     }
                 }
@@ -129,7 +132,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    text = "Overview",
+                    text = stringResource(R.string.overview),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -142,14 +145,14 @@ fun HomeScreen(
                 ) {
                     OverviewCard(
                         modifier = Modifier.weight(1f),
-                        title = "Total",
+                        title = stringResource(R.string.total),
                         value = dashboard.summary.total,
                         icon = Icons.Default.CheckCircle
                     )
 
                     OverviewCard(
                         modifier = Modifier.weight(1f),
-                        title = "Due Today",
+                        title = stringResource(R.string.due_today),
                         value = dashboard.summary.dueToday,
                         icon = Icons.Default.Schedule
                     )
@@ -163,14 +166,14 @@ fun HomeScreen(
                 ) {
                     OverviewCard(
                         modifier = Modifier.weight(1f),
-                        title = "Upcoming",
+                        title = stringResource(R.string.upcoming),
                         value = dashboard.summary.upcoming,
                         icon = Icons.Default.ArrowForward
                     )
 
                     OverviewCard(
                         modifier = Modifier.weight(1f),
-                        title = "Overdue",
+                        title = stringResource(R.string.overdue),
                         value = dashboard.summary.overdue,
                         icon = Icons.Default.Warning
                     )
@@ -179,7 +182,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    text = "Upcoming",
+                    text = stringResource(R.string.upcoming),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -188,8 +191,8 @@ fun HomeScreen(
             if (dashboard.upcoming.isEmpty()) {
                 item {
                     EmptyStateCard(
-                        title = "Nothing coming up",
-                        message = "You are all caught up for now."
+                        title = stringResource(R.string.nothing_coming_up),
+                        message = stringResource(R.string.all_caught_up)
                     )
                 }
             } else {
@@ -204,7 +207,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    text = "Recently Updated",
+                    text = stringResource(R.string.recently_updated),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -213,8 +216,8 @@ fun HomeScreen(
             if (dashboard.recentlyUpdated.isEmpty()) {
                 item {
                     EmptyStateCard(
-                        title = "No recent updates",
-                        message = "Updated trackers will appear here."
+                        title = stringResource(R.string.no_recent_updates),
+                        message = stringResource(R.string.updated_trackers_appear)
                     )
                 }
             } else {
@@ -317,8 +320,7 @@ private fun SmallTag(
         color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Text(
-            text = text.lowercase()
-                .replaceFirstChar { it.uppercase() },
+            text = localizedTrackerTag(text),
             modifier = Modifier.padding(
                 horizontal = 10.dp,
                 vertical = 5.dp

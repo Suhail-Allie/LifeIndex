@@ -29,6 +29,8 @@ import com.lifeindex.app.ui.screens.RegisterScreen
 import com.lifeindex.app.ui.screens.SettingsScreen
 import com.lifeindex.app.ui.screens.TrackerDetailScreen
 import com.lifeindex.app.ui.screens.TrackersScreen
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun LifeIndexNavGraph() {
@@ -98,14 +100,26 @@ fun LifeIndexNavGraph() {
                             icon = {
                                 Icon(
                                     imageVector = icon,
-                                    contentDescription = screen.route
+                                    contentDescription = when (screen) {
+                                        Screen.Home -> stringResource(R.string.nav_home)
+                                        Screen.Trackers -> stringResource(R.string.nav_trackers)
+                                        Screen.Calendar -> stringResource(R.string.nav_calendar)
+                                        Screen.Documents -> stringResource(R.string.nav_documents)
+                                        Screen.Settings -> stringResource(R.string.nav_settings)
+                                        else -> stringResource(R.string.nav_home)
+                                    }
                                 )
                             },
 
                             label = {
                                 Text(
-                                    screen.route.replaceFirstChar {
-                                        it.uppercase()
+                                    text = when (screen) {
+                                        Screen.Home -> stringResource(R.string.nav_home)
+                                        Screen.Trackers -> stringResource(R.string.nav_trackers)
+                                        Screen.Calendar -> stringResource(R.string.nav_calendar)
+                                        Screen.Documents -> stringResource(R.string.nav_documents)
+                                        Screen.Settings -> stringResource(R.string.nav_settings)
+                                        else -> stringResource(R.string.nav_home)
                                     }
                                 )
                             }

@@ -31,6 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeindex.app.ui.viewmodel.SettingsViewModel
+import com.lifeindex.app.data.local.AppLanguageManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +49,15 @@ fun SettingsScreen(
     var defaultReminder by remember { mutableStateOf("1440") }
 
     var themeExpanded by remember { mutableStateOf(false) }
+    var languageExpanded by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val selectedLanguageCode = AppLanguageManager.currentLanguage(context)
+    val selectedLanguageName = when (selectedLanguageCode) {
+        "af" -> "Afrikaans"
+        "xh" -> "isiXhosa"
+        else -> "English"
+    }
 
     LaunchedEffect(Unit) {
         settingsViewModel.loadSettings()
@@ -74,23 +87,69 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                text = "Settings",
+                text = stringResource(R.string.settings_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "Control how LifeIndex works for you.",
+                text = stringResource(R.string.settings_subtitle),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         SettingsCard(
-            title = "Appearance"
+            title = stringResource(R.string.language)
+        ) {
+            Text(
+                text = stringResource(R.string.choose_language),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            ExposedDropdownMenuBox(
+                expanded = languageExpanded,
+                onExpandedChange = { languageExpanded = !languageExpanded }
+            ) {
+                OutlinedTextField(
+                    value = selectedLanguageName,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.app_language)) },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(languageExpanded)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = languageExpanded,
+                    onDismissRequest = { languageExpanded = false }
+                ) {
+                    listOf(
+                        "en" to "English",
+                        "af" to "Afrikaans",
+                        "xh" to "isiXhosa"
+                    ).forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option.second) },
+                            onClick = {
+                                languageExpanded = false
+                                AppLanguageManager.applyLanguage(context, option.first)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        SettingsCard(
+            title = stringResource(R.string.appearance)
         ) {
 
             Text(
-                text = "Theme",
+                text = stringResource(R.string.theme),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold
             )
@@ -103,13 +162,15 @@ fun SettingsScreen(
             ) {
 
                 OutlinedTextField(
-                    value = theme
-                        .lowercase()
-                        .replaceFirstChar { it.uppercase() },
+                    value = when (theme) {
+                        "SYSTEM" -> stringResource(R.string.system)
+                        "LIGHT" -> stringResource(R.string.light)
+                        else -> stringResource(R.string.dark)
+                    },
                     onValueChange = {},
                     readOnly = true,
                     label = {
-                        Text("App theme")
+                        Text(stringResource(R.string.app_theme))
                     },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults
@@ -135,10 +196,11 @@ fun SettingsScreen(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    option.lowercase()
-                                        .replaceFirstChar {
-                                            it.uppercase()
-                                        }
+                                    when (option) {
+                                        "SYSTEM" -> stringResource(R.string.system)
+                                        "LIGHT" -> stringResource(R.string.light)
+                                        else -> stringResource(R.string.dark)
+                                    }
                                 )
                             },
                             onClick = {
@@ -152,17 +214,17 @@ fun SettingsScreen(
         }
 
         SettingsCard(
-            title = "Notifications"
+            title = stringResource(R.string.notifications)
         ) {
 
             Text(
-                text = "Reminder notifications",
+                text = stringResource(R.string.reminder_notifications),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
-                text = "Allow LifeIndex to use reminder notifications.",
+                text = stringResource(R.string.allow_notifications),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
@@ -175,7 +237,7 @@ fun SettingsScreen(
         }
 
         SettingsCard(
-            title = "Reminders"
+            title = stringResource(R.string.reminders)
         ) {
 
             OutlinedTextField(
@@ -187,17 +249,17 @@ fun SettingsScreen(
                         }
                 },
                 label = {
-                    Text("Default reminder")
+                    Text(stringResource(R.string.default_reminder))
                 },
                 suffix = {
-                    Text("minutes")
+                    Text(stringResource(R.string.minutes))
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Text(
-                text = "1440 minutes is one day before.",
+                text = stringResource(R.string.reminder_one_day_before),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -225,9 +287,9 @@ fun SettingsScreen(
         ) {
             Text(
                 if (uiState.isSaving)
-                    "Saving..."
+                    stringResource(R.string.saving)
                 else
-                    "Save Settings"
+                    stringResource(R.string.save_settings)
             )
         }
 
@@ -239,11 +301,11 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(15.dp)
         ) {
-            Text("Log Out")
+            Text(stringResource(R.string.log_out))
         }
 
         Text(
-            text = "LifeIndex • Track anything. Find everything.",
+            text = stringResource(R.string.footer_tagline),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp),

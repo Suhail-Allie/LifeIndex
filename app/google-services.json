@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "994616732428",
+    "firebase_url": "https://lifeindex-5ac39-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "lifeindex-5ac39",
     "storage_bucket": "lifeindex-5ac39.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.lifeindex.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "994616732428-ij5gs2qednjmb353aomkhgm34tchkcka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lifeindex.app",
+            "certificate_hash": "150f9a063b29a65f4f21a33c84d0dc8884e088df"
+          }
+        },
+        {
+          "client_id": "994616732428-do8g0858f70uakccthm41h1vfgfjd5ar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDI6gF8rdEAo-ZlaDhtMxGHXHe_Ewsasgk"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "994616732428-do8g0858f70uakccthm41h1vfgfjd5ar.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

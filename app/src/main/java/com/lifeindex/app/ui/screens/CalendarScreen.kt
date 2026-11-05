@@ -22,13 +22,17 @@ import androidx.compose.ui.unit.dp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.res.stringResource
+import com.lifeindex.app.R
 
 @Composable
 fun CalendarScreen() {
 
+    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
+        ?: Locale.getDefault()
     val currentMonth = SimpleDateFormat(
         "MMMM yyyy",
-        Locale.getDefault()
+        locale
     ).format(Date())
 
     Column(
@@ -43,13 +47,13 @@ fun CalendarScreen() {
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                text = "Calendar",
+                text = stringResource(R.string.calendar_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "Keep important dates visible.",
+                text = stringResource(R.string.calendar_subtitle),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -82,20 +86,20 @@ fun CalendarScreen() {
                 }
 
                 Text(
-                    text = "Your important tracker dates will appear here.",
+                    text = stringResource(R.string.calendar_tracker_dates),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 FilledTonalButton(
                     onClick = {}
                 ) {
-                    Text("View upcoming trackers")
+                    Text(stringResource(R.string.view_upcoming_trackers))
                 }
             }
         }
 
         Text(
-            text = "Calendar integration is prepared for the next stage of LifeIndex.",
+            text = stringResource(R.string.calendar_integration_note),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
