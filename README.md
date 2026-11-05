@@ -1,842 +1,771 @@
 # LifeIndex
-
 ## Track anything. Find everything.
 
-[![Android CI](https://github.com/Suhail-Allie/LifeIndex/actions/workflows/android.yml/badge.svg)](https://github.com/Suhail-Allie/LifeIndex/actions/workflows/android.yml)
+![Android CI](https://github.com/Suhail-Allie/LifeIndex/actions/workflows/android.yml/badge.svg)
 
-LifeIndex is a personal life administration Android application designed to help users keep important information, responsibilities and records organised in one place.
+LifeIndex is an Android personal life-administration application that helps users organise important personal records, responsibilities, dates and supporting documents in one place.
 
-Instead of creating separate systems for different parts of life, LifeIndex uses a reusable tracker system that allows users to create different types of trackers based on their needs.
+Instead of using different applications to manage different aspects of life, LifeIndex uses a flexible tracker system that can represent personal items, ongoing processes and recurring responsibilities.
+
+This project was developed as part of the **OPSC6312 – Open Source Coding Intermediate Portfolio of Evidence (Final POE – Part 3)**.
 
 ---
 
-# Project Information
+## Project Information
 
-| Information | Details |
+| Item | Details |
 |---|---|
-| **Project** | LifeIndex |
-| **Module** | OPSC6312 – Open Source Coding Intermediate |
-| **Assessment** | Portfolio of Evidence – Part 2 |
-| **Author** | Mogammad Suhail Allie |
-| **Year** | 2026 |
+| Application | LifeIndex |
+| Module | OPSC6312 – Open Source Coding Intermediate |
+| Assessment | Final Portfolio of Evidence – Part 3 |
+| Developer | Mogammad Suhail Allie |
+| Student Number | ST10455559 |
+| Year | 2026 |
+| Package Name | `com.lifeindex.app` |
+| Minimum Android Version | Android 8.0 (API 26) |
+| Compile / Target SDK | 36 |
+| Final Development Branch | `part3-final-poe` |
+| Hosted API | https://lifeindex-api.onrender.com |
 
 ---
 
-# Project Overview
+## Table of Contents
 
-LifeIndex was developed as part of the OPSC6312 Open Source Coding Intermediate Portfolio of Evidence.
-
-The purpose of the application is to provide users with one place to manage important personal records, responsibilities and information.
-
-Examples of information that can be tracked include:
-
-- Passports
-- Vehicles
-- Qualifications
-- Job applications
-- Travel information
-- Recurring services
-- Renewals
-- Other important personal records
-
-The application uses a reusable tracker engine so that users do not need a completely separate system for every area of their life.
-
-The main concept behind LifeIndex is to make personal information easier to organise by allowing users to create trackers that suit different situations while keeping the same core application structure.
-
----
-
-# Problem Being Addressed
-
-Important personal information is often spread across notes applications, calendars, emails, documents and different reminder systems.
-
-LifeIndex addresses this by providing a central personal tracking system where related information can be grouped together.
-
-For example, a user can create a passport tracker containing:
-
-- Passport number
-- Expiry information
-- Notes
-- Custom fields
-- Related information
-
-The same system can then be used for a vehicle, qualification, job application, travel record or another personal responsibility.
+1. [Project Overview](#project-overview)
+2. [Main Application Features](#main-application-features)
+3. [What Was Added in Part 3](#what-was-added-in-part-3)
+4. [Technology Stack](#technology-stack)
+5. [System Architecture](#system-architecture)
+6. [Database and Storage](#database-and-storage)
+7. [REST API](#rest-api)
+8. [Authentication and Security](#authentication-and-security)
+9. [Offline Mode and Synchronisation](#offline-mode-and-synchronisation)
+10. [Notifications](#notifications)
+11. [Multi-language Support](#multi-language-support)
+12. [Build and Installation](#build-and-installation)
+13. [Testing and GitHub Actions](#testing-and-github-actions)
+14. [Final POE Release Notes](#final-poe-release-notes)
+15. [Innovative Features](#innovative-features)
+16. [Application Screenshots](#application-screenshots)
+17. [Play Store Preparation](#play-store-preparation)
+18. [Demonstration Video](#demonstration-video)
+19. [Implementation Scope](#implementation-scope)
+20. [AI Usage](#ai-usage)
+21. [References](#references)
 
 ---
 
-# Main Features
+## 1. Project Overview
 
-## User Authentication
+### Purpose of the Application
 
-LifeIndex provides account-based authentication.
+Important personal information is often spread across notes, emails, calendars, documents and different reminder applications. This can make it difficult to keep track of important dates and find the information or documents associated with a particular responsibility.
 
-Users can:
+LifeIndex was developed to make managing these responsibilities easier by providing one central place to organise personal information.
 
-- Register an account
-- Log in
-- Log out
-- Maintain an authenticated session
-- Access protected application data
+For example, a user can create a passport tracker containing its expiry date, notes, additional information and supporting documents. The same approach can be used for vehicle information, qualifications, warranties, job applications and other personal responsibilities.
 
-Passwords are securely **hashed** on the backend before being stored.
+The main idea behind LifeIndex is flexibility. Users are not restricted to managing one specific category of information because the application uses a reusable tracker system.
 
-The authentication system uses:
+### Intended Users
 
-- JWT access tokens
-- JWT refresh tokens
-- Protected API endpoints
-- User ownership checks
-- Refresh-token session handling
+LifeIndex is intended for individuals who want a more organised way of keeping track of personal records, responsibilities and important dates.
 
 ---
 
-## Tracker Management
+## 2. Main Application Features
 
-LifeIndex provides three main tracker types:
+### User Registration and Login
 
-- **Item**
-- **Process**
-- **Recurring**
+Users can create an account using an email address and password and subsequently log in to access their information.
 
-Users can:
+The backend hashes passwords before storing them and uses authentication tokens to manage user sessions.
 
-- Create trackers
-- View trackers
-- Edit trackers
-- Delete trackers
-- Archive trackers
-- View tracker details
+Google Sign-In is also supported through Android Credential Manager and backend verification.
 
-Trackers can contain information such as:
+### Tracker Management
 
-- Title
-- Tracker type
-- Status
-- Priority
-- Important date
-- Notes
-- Custom fields
+Trackers are the main functionality of LifeIndex. The application supports three tracker types:
 
-### Item Trackers
+- **Item:** Used for long-term personal records such as passports, vehicles, qualifications and warranties.
+- **Process:** Used for activities that move through different stages, such as job applications.
+- **Recurring:** Used for responsibilities that happen repeatedly, such as renewals or vehicle services.
 
-Item trackers are designed for long-term records such as:
+Users can create, view, edit, archive, restore and delete trackers.
 
-- Passports
-- Vehicles
-- Warranties
-- Important documents
+Each tracker can contain information such as its title, type, status, priority, important dates, notes and custom fields.
 
-### Process Trackers
+### Templates
 
-Process trackers are designed for activities that move through stages, such as:
+Built-in templates provide users with a starting structure when creating trackers. This makes it easier to capture relevant information without having to configure every field manually.
 
-- Job applications
-- Applications
-- Other multi-step processes
+### Custom Fields
 
-### Recurring Trackers
+Custom fields allow different trackers to store information relevant to their specific purpose.
 
-Recurring trackers are designed for responsibilities that repeat, such as:
+Field definitions are stored separately from their values, which makes the tracker system more flexible. The current tracker-detail interface supports text, date and yes/no fields.
 
-- Renewals
-- Services
-- Regular maintenance
-- Recurring responsibilities
+### Home Dashboard
 
----
+The Home screen provides an overview of the user's information, including:
 
-## Templates
+- Total trackers.
+- Items due today.
+- Upcoming items.
+- Overdue items.
+- Recently updated records.
 
-LifeIndex includes reusable templates for common use cases.
+This allows users to identify important responsibilities without opening every tracker individually.
 
-Current templates include:
+### Search and Calendar
 
-- Passport
-- Vehicle
-- Job Application
-- Qualification
-- Travel
+Search allows users to locate trackers by their information.
 
-Templates allow users to start with a predefined structure instead of building every tracker from scratch.
+The calendar view provides another way to navigate date-related tracker information and identify important upcoming dates.
 
-This supports the reusable tracker engine that was planned during the design stage of the project.
+### Document Management
 
----
+Users can attach supporting documents to trackers.
 
-## Custom Fields
+Supported file types include PDF, JPEG and PNG, with a maximum file size of 10 MB.
 
-LifeIndex uses a flexible field system so that different trackers can store different types of information.
+Documents are stored in a private Supabase Storage bucket. The application retrieves document information through the backend and uses temporary signed URLs when a document needs to be downloaded.
 
-Supported field types include:
+### Application Settings
 
-- Text
-- Number
-- Date
-- Yes/No
-- Choice
+The Settings screen allows users to manage application preferences, including:
 
-This allows different trackers to capture different information while still using the same reusable tracker engine.
+- Application theme.
+- Notification preference.
+- Default reminder lead time.
+- Display language.
 
-The application uses separate field definitions and values so that tracker information can remain flexible without requiring a separate database structure for every possible tracker.
+### Tracker Archiving
+
+Users can archive trackers that they no longer need to see in their active tracker list. Archived trackers can be restored when needed.
 
 ---
 
-## Dashboard
+## 3. What Was Added in Part 3
 
-The Home dashboard provides an overview of the user's tracking information.
+Part 3 focused on improving the original prototype and introducing additional functionality required for the final POE.
 
-It includes:
+The following additions were made:
 
-- Total trackers
-- Due today
-- Upcoming trackers
-- Overdue trackers
-- Recently updated trackers
+**Google Single Sign-On**
 
-The dashboard provides a quick summary when the user opens the application.
+Google Sign-In was integrated using Android Credential Manager. The backend verifies the Google ID token before allowing the user to access the application.
 
----
+**Offline Tracker Functionality**
 
-## Search and Filtering
+Room was introduced to maintain a local tracker cache. WorkManager schedules synchronisation when a network connection becomes available.
 
-Users can search trackers by title and filter trackers by tracker type.
+**Push Notifications**
 
-This allows specific records to be located quickly as the number of trackers increases.
+Firebase Cloud Messaging was integrated for push notifications, while Firebase Firestore stores notification records.
 
----
+**Multi-language Support**
 
-## Settings
+English, Afrikaans and isiXhosa language resources were added, allowing users to change the application language through Settings.
 
-Users can change application preferences including:
+**Document Storage**
 
-- Theme
-- Notification preference
-- Default reminder time
+Supabase Storage was integrated to allow users to upload, retrieve and delete supporting documents associated with trackers.
 
-Settings are sent through the REST API and stored for the user's account.
+**Backend Improvements**
+
+The backend was extended to support the additional functionality and was deployed using Render.
+
+These changes expanded LifeIndex beyond its original prototype and improved how the application manages personal information.
 
 ---
 
-## Input Validation and Error Handling
+## 4. Technology Stack
 
-LifeIndex validates important user input before requests are submitted.
-
-Validation includes:
-
-- Invalid email addresses
-- Missing display names
-- Short registration passwords
-- Empty tracker titles
-- Invalid reminder values
-
-Validation and API errors are displayed to the user instead of allowing invalid input to cause the application to crash.
-
-The application was also tested with incorrect login credentials and invalid form values.
-
----
-
-# User Interface
-
-LifeIndex uses a modern, minimal and user-friendly interface.
-
-The interface was designed around:
-
-- Simple navigation
-- Clear visual hierarchy
-- Consistent spacing
-- Rounded components
-- Clear typography
-- Minimal visual clutter
-- Easy access to important information
-
-## Main Navigation
-
-The main application navigation contains:
-
-- Home
-- Trackers
-- Calendar
-- Documents
-- Settings
-
-The Android application is built using Jetpack Compose and Material 3.
+| Area | Technology | Purpose |
+|---|---|---|
+| Programming Language | Kotlin | Android application development |
+| UI Framework | Jetpack Compose | User interface |
+| Design Components | Material 3 | Consistent Android design |
+| Navigation | Navigation Compose | Screen navigation |
+| Networking | Retrofit and OkHttp | API communication |
+| JSON Processing | Gson | JSON conversion |
+| State Management | ViewModel, Flow and Coroutines | Application state and asynchronous operations |
+| Local Database | Room | Offline tracker storage |
+| Background Processing | WorkManager | Tracker synchronisation |
+| Backend | Node.js | Server runtime |
+| Backend Framework | Express.js | REST API |
+| Authentication | JWT and bcryptjs | Authentication and password hashing |
+| Google Authentication | Google Auth Library | Google ID-token verification |
+| Relational Database | PostgreSQL | Structured application data |
+| Backend Database Hosting | Supabase | PostgreSQL hosting |
+| File Storage | Supabase Storage | Private document storage |
+| NoSQL Database | Firebase Firestore | Notification records |
+| Push Notifications | Firebase Cloud Messaging | Notification delivery |
+| Backend Hosting | Render | Hosting the Express API |
+| Version Control | Git and GitHub | Source code management |
+| Automated Workflow | GitHub Actions | Automated testing and builds |
 
 ---
 
-# Technology Stack
+## 5. System Architecture
 
-## Android
+LifeIndex uses a client-server architecture. The Android application communicates with a hosted Node.js and Express backend through a REST API.
 
-- Kotlin
-- Jetpack Compose
-- Material 3
-- Android Studio
-- Android SDK
-- Retrofit
-- Gson
-- ViewModel
-- Gradle
+The Android side uses Jetpack Compose for the interface, ViewModels to manage screen state and repositories to coordinate data operations.
 
-## Backend
+Room is used for local tracker storage, while the hosted backend manages the main application data and communicates with the external storage and Firebase services.
 
-- Node.js
-- Express.js
-- REST API
-- JSON Web Tokens
-- bcryptjs
-- PostgreSQL client (`pg`)
-
-## Database
-
-- PostgreSQL
-- Supabase
-
-## Hosting
-
-- Render
-
-## Version Control and Continuous Integration
-
-- Git
-- GitHub
-- GitHub Actions
-
----
-
-# System Architecture
+### Architecture Diagram
 
 ```text
-                    ┌─────────────────────────┐
-                    │    LifeIndex Android    │
-                    │     Kotlin / Compose    │
-                    └────────────┬────────────┘
-                                 │
-                                 │ HTTPS / REST API
-                                 ▼
-                    ┌─────────────────────────┐
-                    │      Render Web         │
-                    │   Node.js / Express     │
-                    └────────────┬────────────┘
-                                 │
-                                 │ PostgreSQL
-                                 ▼
-                    ┌─────────────────────────┐
-                    │   Supabase PostgreSQL   │
-                    └─────────────────────────┘
+                 ANDROID APPLICATION
+                          |
+                 Jetpack Compose
+                          |
+                     ViewModels
+                          |
+                    Repositories
+                     /       \
+                    /         \
+              Room DB       Retrofit
+                |               |
+                |          HTTPS REST API
+                |               |
+                |               |
+                +--------+------+
+                         |
+                         v
+                 RENDER HOSTING
+                         |
+                   Express API
+                         |
+          +--------------+--------------+
+          |              |              |
+          v              v              v
+      PostgreSQL    Supabase        Firebase
+      Database      Storage         Services
+          |              |           /    \
+          |              |     Firestore  FCM
+          |              |         |       |
+      Structured     Documents  Notification Push
+        Data           Files       Records  Delivery
 ```
 
-The Android application communicates with the hosted backend through HTTPS.
+### Application Data Flow
 
-The backend provides the REST API and communicates with the PostgreSQL database hosted through Supabase.
+1. The user interacts with a screen in the Android application.
+2. The relevant ViewModel handles the action and communicates with a repository.
+3. For supported offline tracker operations, the repository updates the local Room database.
+4. When online, Retrofit sends requests to the hosted Express API.
+5. The backend validates the request and checks that the authenticated user owns the relevant information.
+6. The backend communicates with PostgreSQL, Supabase Storage or Firebase, depending on the operation.
+7. The response is returned to the Android application and displayed to the user.
 
 ---
 
-# REST API
+## 6. Database and Storage
 
-The LifeIndex API is versioned under:
+LifeIndex uses multiple storage technologies because different types of information require different storage approaches.
 
-`/api/v1`
+### PostgreSQL – Structured Data
 
-## Main API Areas
+PostgreSQL, hosted through Supabase, stores the main application records.
 
-- `/auth`
-- `/users`
-- `/trackers`
-- `/categories`
-- `/templates`
-- `/dashboard`
-- `/search`
+This includes:
 
-## Authentication Endpoints
+- User account information and password hashes.
+- User settings and preferences.
+- Tracker categories and templates.
+- Tracker records and version numbers.
+- Custom field definitions and values.
+- Refresh-token session records.
+- Document metadata and storage paths.
+- Registered Android device tokens.
 
-```text
-POST   /api/v1/auth/register
-POST   /api/v1/auth/login
-POST   /api/v1/auth/refresh
-POST   /api/v1/auth/logout
-```
+The relational database is used because these records have relationships with users and trackers and need to be managed consistently.
 
-## User Settings Endpoints
+### Supabase Storage – Document Storage
 
-```text
-GET    /api/v1/users/me/settings
-PATCH  /api/v1/users/me/settings
-```
+Supabase Storage is used to store the actual files uploaded by users.
 
-## Tracker Endpoints
+LifeIndex uses a private storage bucket called:
 
-```text
-GET    /api/v1/trackers
-POST   /api/v1/trackers
-GET    /api/v1/trackers/{id}
-PATCH  /api/v1/trackers/{id}
-DELETE /api/v1/trackers/{id}
-PATCH  /api/v1/trackers/{id}/archive
-```
+`lifeindex-attachments`
 
-## Template Endpoints
+The database stores the document metadata, while Supabase Storage stores the actual file contents.
+
+The backend checks ownership before allowing access to a document. When a user requests a document, the API can generate a temporary signed download URL that expires after 10 minutes.
+
+The Supabase secret key remains on the backend and is not included in the Android application.
+
+### Firebase Firestore – NoSQL Database
+
+Firebase Firestore is used to store notification records.
+
+The notification data is organised using the following structure:
 
 ```text
-GET    /api/v1/templates
-GET    /api/v1/templates/{id}/fields
+users/{userId}/notifications/{notificationId}
 ```
 
-## Tracker Field Endpoints
+Each notification record can contain:
 
-```text
-GET    /api/v1/trackers/{id}/fields
-PATCH  /api/v1/trackers/{id}/fields
-```
+- Notification title.
+- Notification message.
+- Notification type.
+- Related tracker ID, where applicable.
+- Read status.
+- Creation and update timestamps.
 
-## Dashboard and Search
+The backend can create and retrieve these notification records.
 
-```text
-GET    /api/v1/dashboard
-GET    /api/v1/search/trackers
-```
+### Room – Local Database
 
-## Health and Database Testing
+Room is used to store tracker information locally on the Android device.
 
-```text
-GET    /api/v1/health
-GET    /api/v1/db-test
-```
+This allows supported tracker information to remain available when an internet connection is unavailable.
+
+Room also stores synchronisation information to identify whether a tracker is pending synchronisation, already synchronised or in conflict.
 
 ---
 
-# Deployment
+## 7. REST API
 
-The LifeIndex backend is deployed using **Render**.
+LifeIndex uses a custom REST API developed with Node.js and Express.
 
-The backend is built with Node.js and Express and connects to a PostgreSQL database hosted through **Supabase**.
+The API is hosted on Render.
 
-The Android application uses the hosted API over HTTPS.
+**Production API URL:**
 
-## Hosted API
+https://lifeindex-api.onrender.com
 
-### Base API
+**API Base Path:**
 
-[Open LifeIndex Hosted API](https://lifeindex-api.onrender.com/api/v1/)
+`https://lifeindex-api.onrender.com/api/v1/`
 
-### Health Check
+Retrofit is used by the Android application to communicate with the backend.
 
-[Open LifeIndex API Health Check](https://lifeindex-api.onrender.com/api/v1/health)
+### Main API Endpoints
 
-### Database Connection Check
+The following table summarises the main implemented API routes.
 
-[Open LifeIndex Database Connection Check](https://lifeindex-api.onrender.com/api/v1/db-test)
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/auth/register` | Register a new account |
+| POST | `/auth/login` | Log in using email and password |
+| POST | `/auth/google` | Verify Google Sign-In |
+| POST | `/auth/refresh` | Refresh an access session |
+| POST | `/auth/logout` | Revoke a refresh session |
+| GET / PATCH | `/users/me/settings` | Retrieve or update user settings |
+| GET | `/categories` | Retrieve tracker categories |
+| GET | `/templates` | Retrieve available templates |
+| GET | `/templates/:id/fields` | Retrieve template field definitions |
+| GET / POST | `/trackers` | Retrieve or create trackers |
+| GET / PATCH / DELETE | `/trackers/:id` | Retrieve, update or delete a tracker |
+| PATCH | `/trackers/:id/archive` | Archive a tracker |
+| PATCH | `/trackers/:id/restore` | Restore an archived tracker |
+| POST | `/trackers/sync` | Synchronise queued tracker operations |
+| GET / PATCH | `/trackers/:id/fields` | Retrieve or update tracker field values |
+| GET | `/dashboard` | Retrieve dashboard information |
+| GET | `/search/trackers` | Search tracker records |
+| GET | `/attachments` | Retrieve the user's documents |
+| POST | `/trackers/:trackerId/attachments` | Upload a document |
+| GET | `/attachments/:id/download` | Generate a temporary download URL |
+| DELETE | `/attachments/:id` | Delete a document |
+| POST | `/devices/register` | Register an FCM device token |
+| POST / GET | `/notifications` | Create or retrieve notifications |
+| PATCH | `/notifications/:notificationId/read` | Mark a notification as read |
+| PATCH | `/notifications/read-all` | Mark all notifications as read |
+| GET | `/health` | Check API availability |
 
-The database connection check confirms that the deployed API can communicate with the hosted PostgreSQL database.
-
-Sensitive environment variables are stored securely in the hosting environment and are not committed to the repository.
-
----
-
-# Database
-
-LifeIndex uses PostgreSQL through Supabase.
-
-The database contains tables supporting areas such as:
-
-- Users
-- User settings
-- Refresh sessions
-- Categories
-- Templates
-- Template fields
-- Trackers
-- Field definitions
-- Field values
-- Reminders
-- Attachments
-- History events
-- Notifications
-- Devices
-
-The tracker system separates field definitions from field values so that different trackers can store different types of information while using the same tracker engine.
-
----
-
-# Security
-
-The application includes:
-
-- Password hashing using bcryptjs
-- JWT access tokens
-- JWT refresh tokens
-- Protected API routes
-- User ownership checks
-- Refresh-token session handling
-- Environment variables for sensitive configuration
-- HTTPS communication with the hosted API
-
-The real `.env` file is excluded from the Git repository.
-
-A safe `.env.example` file is included for configuration reference without exposing credentials.
+Authenticated endpoints require a valid bearer access token unless they are specifically designed for unauthenticated access, such as registration and login.
 
 ---
 
-# Local Development
+## 8. Authentication and Security
 
-## Android Application
+Security was considered throughout the development of LifeIndex because the application stores personal information and supporting documents.
 
-Open the project in Android Studio.
+The main security measures include:
 
-The Android application can be built using:
+- Passwords are hashed on the backend using `bcryptjs` before they are stored in PostgreSQL.
+- JWT access tokens are used to authenticate requests.
+- Refresh-token sessions allow users to renew their access sessions.
+- Google ID tokens are verified by the backend before Google authentication is accepted.
+- Protected API operations check that the authenticated user owns the requested tracker or document.
+- Document uploads are restricted to PDF, JPEG and PNG files.
+- The document upload process applies a 10 MB size limit and checks the file signature.
+- The Supabase Storage bucket is private.
+- Document downloads use temporary signed URLs.
+- Backend credentials and signing secrets are stored as environment secrets rather than being placed in public source code.
+- Communication with the hosted API uses HTTPS.
+
+The application does not store user passwords as readable plaintext.
+
+---
+
+## 9. Offline Mode and Synchronisation
+
+Offline functionality was introduced in Part 3 using Room and WorkManager.
+
+Room maintains a local tracker cache, while WorkManager schedules synchronisation when network connectivity becomes available.
+
+### How Synchronisation Works
+
+1. A user creates or changes a supported tracker.
+2. The application saves the change to the local Room database.
+3. The tracker is marked as `PENDING`.
+4. A synchronisation operation is queued.
+5. WorkManager schedules the synchronisation process.
+6. Once connectivity is available, the application submits the queued operations to the backend through:
+
+   `POST /api/v1/trackers/sync`
+
+7. The backend checks the tracker version before applying an update.
+8. A successful operation is marked as `SYNCED`.
+9. If the server version has changed, the operation is marked as `CONFLICT` so the user can compare the local and server versions.
+
+### Supported Offline Operations
+
+The current offline synchronisation implementation supports:
+
+- Tracker creation.
+- Tracker updates, including notes.
+- Tracker archiving.
+- Tracker deletion.
+
+The conflict-resolution process preserves the local copy while presenting the server version for comparison.
+
+**Current limitation:** Custom-field changes and reminder changes are not included in the offline synchronisation queue. Offline support should therefore be understood as applying to the supported tracker operations rather than every feature in the application.
+
+---
+
+## 10. Notifications
+
+Firebase Cloud Messaging (FCM) is used to support push notifications in LifeIndex.
+
+The backend stores notification records in Firebase Firestore and uses Firebase Cloud Messaging to send push notifications to registered Android devices.
+
+The process works as follows:
+
+1. The Android device obtains an FCM registration token.
+2. The application sends the token to the backend.
+3. The backend associates the token with the authenticated LifeIndex user.
+4. Notification information is stored in Firestore.
+5. The backend uses Firebase Cloud Messaging to send the notification.
+6. The Android application receives the push notification.
+
+Users can retrieve their notification records and mark notifications as read.
+
+---
+
+## 11. Multi-language Support
+
+LifeIndex includes support for three languages:
+
+| Language | Android Resource Directory |
+|---|---|
+| English | `values` |
+| Afrikaans | `values-af` |
+| isiXhosa | `values-xh` |
+
+The language can be changed through the application settings.
+
+Android string resources are used to manage the translated interface text. This makes it easier to maintain and expand the language support without having to rewrite the screen layouts.
+
+---
+
+## 12. Build and Installation
+
+### Development Requirements
+
+To build the Android application, the following tools and configurations are required:
+
+- Android Studio.
+- Compatible Android Gradle Plugin 9.0.1 setup.
+- JDK 17 or a compatible newer JDK.
+- Android SDK Platform 36.
+- Android device or emulator running Android 8.0 (API 26) or newer.
+
+For backend development:
+
+- Node.js 24.x.
+- npm.
+- Access to the configured PostgreSQL, Supabase Storage and Firebase services.
+
+### Clone the Repository
 
 ```bash
-./gradlew assembleDebug
+git clone https://github.com/Suhail-Allie/LifeIndex.git
+cd LifeIndex
+git checkout part3-final-poe
 ```
 
-Unit tests can be run using:
+### Build the Android Application
+
+For Windows PowerShell:
+
+```powershell
+.\gradlew.bat :app:assembleDebug --console=plain
+```
+
+For macOS or Linux:
 
 ```bash
-./gradlew testDebugUnitTest
+./gradlew :app:assembleDebug
 ```
 
-## Backend
+The generated debug APK is located at:
 
-Navigate to the backend folder:
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Install the Application Using ADB
+
+With an Android device connected and USB debugging enabled:
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Run the Backend Locally
 
 ```bash
 cd backend
-```
-
-Install dependencies:
-
-```bash
 npm install
-```
-
-Start the backend:
-
-```bash
 npm start
 ```
 
-The backend uses environment variables for its database connection and JWT configuration.
+The backend requires environment configuration before it can connect to the hosted services.
 
-Do not commit the real `.env` file.
+The following environment variables are used where applicable:
+
+```text
+DATABASE_URL
+JWT_ACCESS_SECRET
+JWT_REFRESH_SECRET
+GOOGLE_WEB_CLIENT_ID
+SUPABASE_URL
+SUPABASE_SECRET_KEY
+```
+
+Firebase Admin also requires its service-account credentials to be configured securely on the backend.
+
+**Important:** Secret values must never be committed to GitHub or included in public documentation.
 
 ---
 
-# Testing
+## 13. Testing and GitHub Actions
 
-LifeIndex includes automated unit tests focused on validation functionality.
+Testing was carried out during development to check the application, backend integrations and the functionality introduced in Part 3.
 
-Tests cover areas including:
+### Android Build Testing
 
-- Email validation
-- Display name validation
-- Password validation
-- Tracker title validation
-- Reminder validation
+The Android application was built using Gradle.
 
-## Run Unit Tests
-
-```bash
-./gradlew testDebugUnitTest
+```powershell
+.\gradlew.bat :app:assembleDebug --console=plain
 ```
 
-## Build the Debug Application
+### Backend Syntax Testing
 
-```bash
-./gradlew assembleDebug
+Node.js syntax checks were performed on the attachment integration files.
+
+```powershell
+node --check .\backend\controllers\attachmentController.js
+node --check .\backend\routes\attachmentRoutes.js
+node --check .\backend\config\supabaseStorage.js
 ```
 
-The application was also manually tested through:
+### API Health Check
 
-- Registration
-- Login
-- Incorrect login credentials
-- Settings updates
-- Tracker creation
-- Tracker editing
-- Tracker deletion
-- Tracker archiving
-- Template selection
-- Custom fields
-- Search
-- Filtering
-- Hosted API requests
-- Hosted database connection
+The hosted API can be checked using:
 
----
+```powershell
+Invoke-RestMethod https://lifeindex-api.onrender.com/api/v1/health
+```
 
-# GitHub Actions
+The successful health check identifies the service as `LifeIndex API` and returns a status of `ok`.
 
-GitHub Actions is used to automatically test and build the Android application.
+### Manual Testing
+
+The following functionality was exercised during development:
+
+- Email registration and login.
+- Google Sign-In and backend ID-token verification.
+- Changing the application language.
+- Receiving FCM notifications on a registered test device during emulator testing.
+- Offline tracker creation and local persistence.
+- Editing trackers and synchronising after reconnecting.
+- Version-conflict handling.
+- Supabase document upload and document management.
+- Backend deployment and communication with the hosted API.
+
+The debug APK was also successfully installed on a physical Redmi 10 2022 Android device.
+
+The installation itself is separate from a full functional test of every feature on the physical device. The final demonstration video should provide the evidence for the on-device functionality being presented.
+
+### GitHub Actions
+
+GitHub Actions is used to automate Android checks and build processes.
 
 The workflow is located at:
 
-`.github/workflows/android.yml`
+```text
+.github/workflows/android.yml
+```
 
-## Workflow Steps
+The workflow helps check the project through automated Gradle testing and building when the relevant repository events trigger it.
 
-1. Repository checkout
-2. JDK setup
-3. Gradle setup
-4. Unit tests
-5. Debug APK build
+The GitHub Actions badge at the top of this README links to the workflow.
 
-The workflow runs when changes are pushed to the `main` branch or when a pull request is opened against `main`.
+The workflow results can also be viewed through the repository's **Actions** tab.
 
-A successful GitHub Actions run confirms that the project can be tested and built in a clean cloud environment.
+### Version Control
 
-## GitHub Links
+Git and GitHub were used throughout development to maintain the project source code and record changes.
 
-[Open the LifeIndex GitHub Repository](https://github.com/Suhail-Allie/LifeIndex)
-
-[View GitHub Actions](https://github.com/Suhail-Allie/LifeIndex/actions)
-
-[View Android CI Workflow](https://github.com/Suhail-Allie/LifeIndex/actions/workflows/android.yml)
-
----
-
-# Repository Structure
+The final development branch is:
 
 ```text
-LifeIndex/
-│
-├── app/
-│   ├── src/
-│   │   ├── main/
-│   │   │   └── java/com/lifeindex/app/
-│   │   │       ├── data/
-│   │   │       │   ├── local/
-│   │   │       │   ├── model/
-│   │   │       │   ├── remote/
-│   │   │       │   └── repository/
-│   │   │       ├── navigation/
-│   │   │       ├── ui/
-│   │   │       │   ├── screens/
-│   │   │       │   ├── theme/
-│   │   │       │   └── viewmodel/
-│   │   │       ├── util/
-│   │   │       └── MainActivity.kt
-│   │   │
-│   │   └── test/
-│   │       └── java/com/lifeindex/app/
-│   │
-│   └── build.gradle.kts
-│
-├── backend/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── routes/
-│   ├── .env.example
-│   ├── db.js
-│   ├── jwt.js
-│   ├── server.js
-│   ├── tokenUtils.js
-│   └── package.json
-│
-├── .github/
-│   └── workflows/
-│       └── android.yml
-│
-├── docs/
-│   └── images/
-│
-├── .gitignore
-├── README.md
-├── gradle/
-├── gradlew
-├── gradlew.bat
-├── build.gradle.kts
-└── settings.gradle.kts
+part3-final-poe
+```
+
+The final POE submission should also be tagged using the required tag:
+
+```bash
+git tag -a "Final POE" -m "Final POE submission"
+git push origin "Final POE"
 ```
 
 ---
 
-# Screenshots
+## 14. Final POE Release Notes
 
-The completed LifeIndex application should be documented with screenshots of the main interface.
+### Final POE – 5 November 2026
 
-Store the screenshots in:
+The final version builds on the original prototype by introducing additional functionality and improving the application's overall design and capabilities.
 
-`docs/images/`
+| Area | Changes made |
+|---|---|
+| Authentication | Added Google Single Sign-On using Credential Manager and backend ID-token verification. |
+| Offline functionality | Added Room caching, queued tracker operations and WorkManager synchronisation. |
+| Conflict handling | Added version-based conflict detection and a comparison process for local and server data. |
+| Notifications | Integrated Firebase Cloud Messaging and Firestore notification storage. |
+| Language support | Added English, Afrikaans and isiXhosa resources and language selection. |
+| Document management | Integrated Supabase Storage for private document uploads, retrieval and deletion. |
+| Security | Added file validation, ownership checks and temporary signed document download links. |
+| Backend | Expanded the Express API to support the additional functionality and deployed it through Render. |
+| Application interface | Updated navigation, settings and translated screen resources. |
+| Repository | Updated the source code and backend integration for the final POE. |
 
-Recommended files:
+The most important changes in this release were the introduction of offline tracker synchronisation, Google Sign-In, push notifications and multi-language support.
 
-```text
-docs/images/login.png
-docs/images/dashboard.png
-docs/images/trackers.png
-docs/images/tracker-detail.png
-docs/images/settings.png
-```
-
-## Login
-
-![LifeIndex Login](docs/images/login.png)
-
-## Dashboard
-
-![LifeIndex Dashboard](docs/images/dashboard.png)
-
-## Trackers
-
-![LifeIndex Trackers](docs/images/trackers.png)
-
-## Tracker Detail
-
-![LifeIndex Tracker Detail](docs/images/tracker-detail.png)
-
-## Settings
-
-![LifeIndex Settings](docs/images/settings.png)
+These features expanded the original prototype into a more complete personal life-administration application.
 
 ---
 
-# Demonstration Video
+## 15. Innovative Features
 
-The demonstration video presents the completed LifeIndex Part 2 prototype.
+LifeIndex includes several features that make the application flexible and practical for managing different types of personal information.
 
-The video demonstrates:
+### Reusable Tracker System
 
-- Account registration
-- Login
-- Authentication
-- Tracker creation
-- Tracker editing
-- Tracker management
-- Templates
-- Custom fields
-- Search and filtering
-- Settings
-- Invalid-input handling
-- REST API integration
-- Hosted backend and database integration
+The Item, Process and Recurring tracker types allow users to manage different responsibilities through one common system.
 
-## Video Presentation
+This avoids the need to create separate modules for every possible type of personal record.
 
-**[Watch the LifeIndex Part 2 Demonstration Video](https://youtu.be/zObcPhJk3X4)**
+### Template-Based Tracker Creation
 
-Direct video link:
+Templates provide users with predefined structures for common records, reducing the time needed to create a tracker.
 
-https://youtu.be/zObcPhJk3X4
+### Flexible Custom Fields
 
----
+Custom fields allow different trackers to capture information specific to their purpose. This makes the application adaptable to different personal requirements.
 
-# Assessment Requirements Covered
+### Connected Personal Records
 
-The Part 2 prototype includes the required non-POE functionality:
+Users can keep important information, notes, custom fields and supporting documents together within a tracker.
 
-- User registration
-- User login
-- Password security
-- Application settings
-- REST API integration
-- Database integration
-- Hosted backend
-- Part 1 application features
-- Invalid-input handling
-- Automated testing
-- GitHub Actions
-- GitHub repository
-- README documentation
-- Comments
-- Logging
+### Offline Tracker Management
 
-Additional user-defined functionality includes:
+The ability to create and update supported trackers without an internet connection makes the application more practical when connectivity is unavailable.
 
-- Tracker management
-- Item, Process and Recurring trackers
-- Reusable templates
-- Custom fields
-- Dashboard
-- Search
-- Tracker filtering
-- Tracker editing
-- Tracker archiving
+### Dashboard Overview
+
+The dashboard brings important dates and tracker information together, helping users identify responsibilities that need attention.
 
 ---
 
-# Comments and Logging
 
-Comments have been added to important areas of the application to explain key implementation decisions and logic.
+| Offline synchronisation | `offline-sync.png` |
 
-Logging is used to assist with:
 
-- Application startup
-- API troubleshooting
-- Database troubleshooting
-- Authentication troubleshooting
-- Backend operations
+## 18. Demonstration Video
 
-Logging and comments are focused on important application behaviour rather than unnecessary comments throughout the code.
+The final demonstration video presents LifeIndex running on a physical Android device.
 
----
+The video should include a voice-over explaining the functionality being demonstrated.
 
-# AI Use Declaration
+The demonstration should cover:
 
-AI tools were used as development support during the implementation of LifeIndex.
+- User registration and login.
+- Google Single Sign-On.
+- Tracker creation and management.
+- Application settings.
+- Offline tracker functionality and synchronisation.
+- Push notifications.
+- Multi-language support.
+- Document management.
+- The hosted backend and relevant stored data.
 
-ChatGPT was used for code organisation, technical explanations, debugging, UI improvements, testing ideas, deployment support and documentation.
+**Final demonstration video:**
 
-AI assistance was used with technologies including Kotlin, Jetpack Compose, Retrofit, Node.js, Express, PostgreSQL, JWT authentication, GitHub Actions and deployment.
-
-The application concept, feature selection, requirements, architecture and technical direction remained my responsibility. AI-generated suggestions were reviewed, adapted and tested within the LifeIndex project before being used.
-
-AI was also used to help organise the implementation around the assessment requirements, including REST API integration, validation, automated testing, GitHub Actions, documentation and error handling.
-
-The final implementation and testing were performed within the LifeIndex project. Generated suggestions were not accepted without checking that they worked with the existing application.
-
-AI was therefore used as a development and learning assistant while responsibility for the final project, testing and submission remained with me.
+(https://youtu.be/zObcPhJk3X4)
 
 ---
 
-# Future Development
+## 19. Implementation Scope
 
-The following features are planned for the Final POE stage:
+A few implementation details are important when describing the final version:
 
-- Google SSO
-- Offline functionality and synchronisation
-- Push notifications
-- Multi-language support including South African languages
-
-These features are outside the current Part 2 prototype scope.
+- Offline synchronisation currently covers supported tracker operations and notes. Custom-field edits and reminder changes are not included in the offline queue.
+- The Settings screen includes a default reminder lead-time preference. This documentation does not claim a complete reminder scheduling and recurrence workflow.
+- The debug APK was installed on a physical Redmi 10 2022 device. Emulator testing and physical-device functional testing should be distinguished when presenting evidence.
+- Google Play publication evidence and the signed release build should be included with the final submission.
 
 ---
 
-# Project Links
+## 20. AI Usage
 
-## Source Code
+ChatGPT was used as an AI-assisted development and writing tool during the development of LifeIndex.
 
-[LifeIndex GitHub Repository](https://github.com/Suhail-Allie/LifeIndex)
+AI assistance was used to understand technical requirements, explore implementation approaches, troubleshoot errors, review code and prepare technical documentation.
 
-## GitHub Actions
 
-[LifeIndex GitHub Actions](https://github.com/Suhail-Allie/LifeIndex/actions)
-
-## Android CI Workflow
-
-[LifeIndex Android CI Workflow](https://github.com/Suhail-Allie/LifeIndex/actions/workflows/android.yml)
-
-## Hosted REST API
-
-[LifeIndex Hosted API](https://lifeindex-api.onrender.com/api/v1/)
-
-## API Health Check
-
-[LifeIndex API Health Check](https://lifeindex-api.onrender.com/api/v1/health)
-
-## Database Connection Check
-
-[LifeIndex Database Connection Check](https://lifeindex-api.onrender.com/api/v1/db-test)
-
-## Demonstration Video
-
-[LifeIndex Part 2 Demonstration Video](https://youtu.be/zObcPhJk3X4)
 
 ---
 
-# Author
+## 21. References
 
-**Mogammad Suhail Allie**
+The following official documentation was used as a reference during development:
 
-**OPSC6312 – Open Source Coding Intermediate**
+- [Android Developers – Guide to App Architecture](https://developer.android.com/topic/architecture)
+- [Android Developers – Jetpack Compose](https://developer.android.com/compose)
+- [Android Developers – Room Persistence Library](https://developer.android.com/training/data-storage/room)
+- [Android Developers – WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
+- [Android Developers – Credential Manager](https://developer.android.com/identity)
+- [Android Developers – App Languages](https://developer.android.com/guide/topics/resources/app-languages)
+- [Firebase – Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
+- [Firebase – Cloud Firestore](https://firebase.google.com/docs/firestore)
+- [Supabase – Storage](https://supabase.com/docs/guides/storage)
+- [Express – Express Application Framework](https://expressjs.com/)
+- [PostgreSQL – Documentation](https://www.postgresql.org/docs/)
+- [Render – Web Services](https://render.com/docs/web-services)
+- [GitHub – GitHub Actions](https://docs.github.com/actions)
 
-**LifeIndex**
+---
 
-**2026**
+**LifeIndex – Track anything. Find everything.**
